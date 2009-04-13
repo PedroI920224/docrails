@@ -1,16 +1,16 @@
-Debugging Rails Applications
+Depurando Aplicaciones Rails
 ============================
+   
+Esta guía le introducirá a las técnicas de depuración para aplicaciones Ruby on Rails. Empleando esta guía estará en la capacidad de:
 
-This guide introduces techniques for debugging Ruby on Rails applications. By referring to this guide, you will be able to:
+* Comprender el propósito de depurar.
+* Identificar fallos y problemas en la aplicación que las pruebas (test) no están identificaando.
+* Aprender las diferentes formas de depurar
+* Analizar la pila de instrucciones (stack trace)
 
-* Understand the purpose of debugging
-* Track down problems and issues in your application that your tests aren't identifying
-* Learn the different ways of debugging
-* Analyze the stack trace
+== Examinar Ayudantes (Helpers) para la Depuración
 
-== View Helpers for Debugging
-
-One common task is to inspect the contents of a variable. In Rails, you can do this with three methods:
+Una tarea común es inspeccionar el contenido de una variable. En Rails, esto se puede hacer empleando tres métodos:
 
 * `debug`
 * `to_yaml`
@@ -18,7 +18,7 @@ One common task is to inspect the contents of a variable. In Rails, you can do t
 
 === debug
 
-The `debug` helper will return a <pre>-tag that renders the object using the YAML format. This will generate human-readable data from any object. For example, if you have this code in a view:
+El ayudante `debug` regresará una etiqueta <pre> que generara el objeto empleando el formato YAML. Esto generará datos que pueden ser leidos por los humanos a partir de cualquier objeto. Por ejemplo, si tiene el siguiente código en una vista:
 
 [source, html]
 ----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ The `debug` helper will return a <pre>-tag that renders the object using the YAM
 </p>
 ----------------------------------------------------------------------------
 
-You'll see something like this:
+Verá algo como lo siguiente:
 
 [source, log]
 ----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ Title: Rails debugging guide
 
 === to_yaml
 
-Displaying an instance variable, or any other object or method, in yaml format can be achieved this way:
+Mostrar una variable de instancia, cualquier otro objeto o método en formato YAML se puede lograr de la siguiente manera: 
 
 [source, html]
 ----------------------------------------------------------------------------
@@ -60,9 +60,9 @@ Displaying an instance variable, or any other object or method, in yaml format c
 </p>
 ----------------------------------------------------------------------------
 
-The `to_yaml` method converts the method to YAML format leaving it more readable, and then the `simple_format` helper is used to render each line as in the console. This is how `debug` method does its magic.
+El método  `to_yaml` convierte el método a formato WAML, haciendolo más legible, luego se usa el ayudante `simple_format` para generar cada linea como en la consola. Así es como el método `debug` hace su mágia.
 
-As a result of this, you will have something like this in your view:
+Como resultado de ello, tendrá algo como siguiente en su vista (view):
 
 [source, log]
 ----------------------------------------------------------------------------
@@ -81,7 +81,7 @@ Title: Rails debugging guide
 
 === inspect
 
-Another useful method for displaying object values is `inspect`, especially when working with arrays or hashes. This will print the object value as a string. For example:
+Otro método útil para mostrar los valores de un objeto es `inspect`, especialmente cuando se trabaja con arreglos y hashes. Lo siguiente mostrará el valir del objeto como una cadena. Por ejemplo:
 
 [source, html]
 ----------------------------------------------------------------------------
@@ -92,7 +92,7 @@ Another useful method for displaying object values is `inspect`, especially when
 </p>
 ----------------------------------------------------------------------------
 
-Will be rendered as follows:
+Generará algo como lo siguiente:
 
 [source, log]
 ----------------------------------------------------------------------------
@@ -103,13 +103,13 @@ Title: Rails debugging guide
 
 == The Logger
 
-It can also be useful to save information to log files at runtime. Rails maintains a separate log file for each runtime environment.
+Támbien puede ser util para almacenar información en los archivos de bitácora en tiempo de ejecución. Rails mantiene archivos de bitácoras separados para cada entorno de ejecución.
 
-=== What is The Logger?
+=== Ques es el Logger?
 
-Rails makes use of Ruby's standard `logger` to write log information. You can also substitute another logger such as `Log4R` if you wish.
+Rails hace uso del gestor de bitácoras estándar de Ruby,`logger`, para escribir información. El mismo, puede ser reemplazado por otras opciones como `Log4R` si lo desea.
 
-You can specify an alternative logger in your +environment.rb+ or any environment file:
+Se puede especificar un gestor de bitácoras alternativo en el archivo +environment.rb+ o en cualquier archivo del entorno:
 
 [source, ruby]
 ----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ ActiveRecord::Base.logger = Logger.new(STDOUT)
 ActiveRecord::Base.logger = Log4r::Logger.new("Application Log")
 ----------------------------------------------------------------------------
 
-Or in the +Initializer+ section, add _any_ of the following
+O en la sección +Initializer+, agregue _cualquiera_ de los siguientes:
 
 [source, ruby]
 ----------------------------------------------------------------------------
@@ -125,14 +125,14 @@ config.logger = Logger.new(STDOUT)
 config.logger = Log4r::Logger.new("Application Log")
 ----------------------------------------------------------------------------
 
-[TIP]
-By default, each log is created under `RAILS_ROOT/log/` and the log file name is +environment_name.log+.
+[NOTA]
+Por defecto, cada archivo de bitácora es creado bajo `RAILS_ROOT/log/`, donde el nombre del archivo es +entorno_nombre.log+.
 
-=== Log Levels
+=== Niveles de Bitácoras
 
-When something is logged it's printed into the corresponding log if the log level of the message is equal or higher than the configured log level. If you want to know the current log level you can call the `ActiveRecord::Base.logger.level` method.
+Cuando algo es registrado, se envia al archivo correspondiente si el nivel de bitácora del mensaje es mayor o igual que el que se encuentra configurado. Si quiere saber el nivel de bitácora actual, puede llamar al método `ActiveRecord::Base.logger.level`.
 
-The available log levels are: +:debug+, +:info+, +:warn+, +:error+, and +:fatal+, corresponding to the log level numbers from 0 up to 4 respectively. To change the default log level, use
+Los niveles de las bitácoras son: +:debug+, +:info+, +:warn+, +:error+, y +:fatal+, que as su vez corresponde con niveles que van desde el 0 al 4, respectivamente. Para cambiar el nivel de las bitácoras por defecto:
 
 [source, ruby]
 ----------------------------------------------------------------------------
@@ -140,14 +140,14 @@ config.log_level = Logger::WARN # In any environment initializer, or
 ActiveRecord::Base.logger.level = 0 # at any time
 ----------------------------------------------------------------------------
 
-This is useful when you want to log under development or staging, but you don't want to flood your production log with unnecessary information.
+Esto es útil cuando se quiere hacer seguimiento a las bitácoras en los ambientes de desarrollo (development) ó pre-producción (staging), pero no se quiere inundar las bitácoras de producción con información innecesaria.
 
-[TIP]
-The default Rails log level is +info+ in production mode and +debug+ in development and test mode.
+[NOTA]
+El nivel de bitácoras por defecto en Rails es +info+ para el ambiente de producción, y +debug+ para los ambientes de desarrollo y pruebas (testing).
 
-=== Sending Messages
+=== Enviando Mensajes 
 
-To write in the current log use the `logger.(debug|info|warn|error|fatal)` method from within a controller, model or mailer:
+Para escribir en el archivo de bitácoras actual use el método `logger.(debug|info|warn|error|fatal)` desde dentro del controlodor, model o mensajero de correos (mailer):
 
 [source, ruby]
 ----------------------------------------------------------------------------
@@ -156,7 +156,7 @@ logger.info "Processing the request..."
 logger.fatal "Terminating application, raised unrecoverable error!!!"
 ----------------------------------------------------------------------------
 
-Here's an example of a method instrumented with extra logging:
+Aquí hay un ejemplo de un método implementado con niveles de bitácora adicionales:
 
 [source, ruby]
 ----------------------------------------------------------------------------
@@ -181,7 +181,7 @@ class PostsController < ApplicationController
 end
 ----------------------------------------------------------------------------
 
-Here's an example of the log generated by this method:
+Este es un ejemplo del texto generado por este método:
 
 [source, log]
 ----------------------------------------------------------------------------
@@ -202,28 +202,28 @@ Redirected to #<Post:0x20af760>
 Completed in 0.01224 (81 reqs/sec) | DB: 0.00044 (3%) | 302 Found [http://localhost/posts]
 ----------------------------------------------------------------------------
 
-Adding extra logging like this makes it easy to search for unexpected or unusual behavior in your logs. If you add extra logging, be sure to make sensible use of log levels, to avoid filling your production logs with useless trivia.
+Agregar niveles adicionales de bitácora como este facilita la búsqueda de conducta inusual en sus logs. Toda vez que se implemente, se hará necesario asegurarse de hacer uso adecuado de los mismos, para evitar llenar las bitácoras del ambiente de producción con información inútil.
 
-== Debugging with ruby-debug
+== Depurando con ruby-debug
 
-When your code is behaving in unexpected ways, you can try printing to logs or the console to diagnose the problem. Unfortunately, there are times when this sort of error tracking is not effective in finding the root cause of a problem. When you actually need to journey into your running source code, the debugger is your best companion.
+Cuando su código se comporta de manera inesperada, puede intentar enviar información a lás bitácoras o a la consola para diagnosticar el fallo. Desarfortunadamente, hay muchas ocasiones en la que este tipo de estrxiategia no permite encontrar la raíz del problema. Cuando se requiere examinar el código fuente, el depurador será su mejor aliado.
 
-The debugger can also help you if you want to learn about the Rails source code but don't know where to start. Just debug any request to your application and use this guide to learn how to move from the code you have written deeper into Rails code.
+El depurador puede ayudarle si quiere aprender sobre el código fuente de Rails pero no sabe por donde empezar. Solo depure cualquier solicitud que le reciba en un aplicación y utilice esta guía para aprender como ir desde el código que ha escrito hacia las profundidades del código en Rails.
 
 === Setup
 
-The debugger used by Rails, +ruby-debug+, comes as a gem. To install it, just run:
+El depurador empleado por Rails, +ruby-debug+, viene como una gema. Para instalarlo ejecute la siguiente secuencia de comandos: 
 
 [source, shell]
 ----------------------------------------------------------------------------
 $ sudo gem install ruby-debug
 ----------------------------------------------------------------------------
 
-In case you want to download a particular version or get the source code, refer to the link:http://rubyforge.org/projects/ruby-debug/[project's page on rubyforge].
+En el caso de que quiera descargar una versión en particular o obtener el código fuente, consulte link:http://rubyforge.org/projects/ruby-debug/[project's page on rubyforge].
 
-Rails has had built-in support for ruby-debug since Rails 2.0. Inside any Rails application you can invoke the debugger by calling the `debugger` method.
+Rails cuaenta con soporte integrado para ruby-debug desde Rails 2.0. Dentro de cualquier aplicación Rails se puede invocar el depurador mediante una llamada al método `debugger`.
 
-Here's an example:
+Aquí hay un ejemplo:
 
 [source, ruby]
 ----------------------------------------------------------------------------
@@ -235,14 +235,14 @@ class PeopleController < ApplicationController
 end
 ----------------------------------------------------------------------------
 
-If you see the message in the console or logs:
+Si ve el siguiente mensane en la consola o en las bitácoras:
 
 [source, log]
 ----------------------------------------------------------------------------
 ***** Debugger requested, but was not available: Start server with --debugger to enable *****
 ----------------------------------------------------------------------------
 
-Make sure you have started your web server with the option +--debugger+:
+Asegurese de que ha iniciado el servidor Web con la opción +--debugger+:
 
 [source, shell]
 ----------------------------------------------------------------------------
@@ -253,25 +253,25 @@ Make sure you have started your web server with the option +--debugger+:
 ...
 ----------------------------------------------------------------------------
 
-[TIP]
-In development mode, you can dynamically `require \'ruby-debug\'` instead of restarting the server, if it was started without `--debugger`.
+[NOTA]
+En el modo desarrollo, puede hacer lo siguiente de manera dinámica: `require \'ruby-debug\'`, en vez de reiniciar el servidor, en caso de no haberlo iniciado con la opción `--debugger`.
 
-In order to use Rails debugging you'll need to be running either *WEBrick* or *Mongrel*. For the moment, no alternative servers are supported.
+Para usar la depuración en Rails, necesitará estar ejecuando su aplicación sobre *WEBrick* o *Mongrel*. Por el momento no existe soporte para servidores alternativos.
 
-=== The Shell
+=== La Consola
 
-As soon as your application calls the `debugger` method, the debugger will be started in a debugger shell inside the terminal window where you launched your application server, and you will be placed at ruby-debug's prompt `(rdb:n)`. The _n_ is the thread number. The prompt will also show you the next line of code that is waiting to run.
+Tan pronto como su aplicación llama al método `debugger`, el depurador se iniciará en una consola para depuración dentro de la ventana desde cual se está ejecutando el servidor de aplicaciones, luego de lo cual encontrará en el interprete de comandos de ruby-debug `(rdb:n)`. La _n_ indica el número de hilos. El interprete le montrará la siguiente linea de código que se encuentra pendiente por ejecutar.
 
-If you got there by a browser request, the browser tab containing the request will be hung until the debugger has finished and the trace has finished processing the entire request.
+Si llegó allí por una petición desde el navegador, la pestaña (tab) que envió la petición permanecerá en espera hasta que el depurador haya terminado y se haya completado la traza para completar el procesamiento de la petición.
 
-For example:
+Por ejemplo:
 
 ----------------------------------------------------------------------------
 @posts = Post.find(:all)
 (rdb:7)
 ----------------------------------------------------------------------------
 
-Now it's time to play and dig into your application. A good place to start is by asking the debugger for help... so type: `help` (You didn't see that coming, right?)
+Ahora llegó el momento de jugar y examinar su aplicación. U buen lugar para empezar es solicitandole ayuda al depurador... con el comando: `help` (No la viste venir, ¿cierto?)
 
 ----------------------------------------------------------------------------
 (rdb:7) help
@@ -286,12 +286,12 @@ condition  down     finish  list    ps    save     thread  var
 continue   edit     frame   method  putl  set      tmate   where
 ----------------------------------------------------------------------------
 
-[TIP]
-To view the help menu for any command use `help <command-name>` in active debug mode. For example: _+help var+_
+[NOTA]
+Para ver el menu de ayuda de cualquier comando: `help <command-name>` con el modo de depuración activo. Por ejemplo: _+help var+_
 
-The next command to learn is one of the most useful: `list`. You can also abbreviate ruby-debug commands by supplying just enough letters to distinguish them from other commands, so you can also use +l+ for the +list+ command.
+El sigueinte comando que aprederá es uno de los más útiles: `list`. Adicionalmente, se pueden abreviar comandos de ruby-debug siempre y cuando se provean suficientes comandos para distinguirlos de otros ya existentes, así por ejemplo podría usar +l+ para el comando +list+.
 
-This command shows you where you are in the code by printing 10 lines centered around the current line; the current line in this particular case is line 6 and is marked by +=>+.
+Este comando indica en donde se encuetra en el código escribiendo 10 lines centradas a los lados de la linea actual; la linea actual en este caso en particular es la número 6 y esta identificada con el los caracteres +=>+.
 
 ----------------------------------------------------------------------------
 (rdb:7) list
@@ -308,7 +308,7 @@ This command shows you where you are in the code by printing 10 lines centered a
    10        format.xml  { render :xml => @posts }
 ----------------------------------------------------------------------------
 
-If you repeat the +list+ command, this time using just `l`, the next ten lines of the file will be printed out.
+Si repite el comando +list+, pero esta vez solo empleando la letra `l`, las próximas diez lineas del archivo se mostrarán.
 
 ----------------------------------------------------------------------------
 (rdb:7) l
@@ -325,15 +325,15 @@ If you repeat the +list+ command, this time using just `l`, the next ten lines o
    20        format.html # show.html.erb
 ----------------------------------------------------------------------------
 
-And so on until the end of the current file. When the end of file is reached, the +list+ command will start again from the beginning of the file and continue again up to the end, treating the file as a circular buffer.
+Y así en lo sucesivo hasta el final del archivo actual. Cuando se haya alcanzado el fin del archivo, el comando +list+ empezará desde el principio del archivo y continuará de nuevo hasta el final, tratando al archivo como un buffer circular.
 
-=== The Context
+=== El Contexto
 
-When you start debugging your application, you will be placed in different contexts as you go through the different parts of the stack.
+Cuando empiece a depurar una aplicación, podrá ser ubicado en diferentes contextos a medida que se desplaza por las distintas partes de la pila.
 
-ruby-debug creates a content when a stopping point or an event is reached. The context has information about the suspended program which enables a debugger to inspect the frame stack, evaluate variables from the perspective of the debugged program, and contains information about the place where the debugged program is stopped.
+ruby-debug genera contenido cuando se ha alcanzado algún punto de parada o evento. El contexto tiene la inforamción sobre que se encuentra suspendido, lo que le permite al depurador inspeccionar la pila de llamadas, evaluar variables desde la perspectiva de un programa depurador, y contiene información acerca del lugar en donde se ha detenido el programa en el que se esta trabajando.
 
-At any time you can call the `backtrace` command (or its alias `where`) to print the backtrace of the application. This can be very helpful to know how you got where you are. If you ever wondered about how you got somewhere in your code, then `backtrace` will supply the answer.
+En cualquier cualquier momento se puede utilizar el comando `backtrace`(o su alias `where`) para imprimir la pila de llamas de la aplicción. Esto puede ser muy útil para saber como se llegó al lugar donde se esta. Si alguna vez se ha preguntado sobre como ha llegado a algún lugar desde su código, entonces `backtrace` le proveera la respuesta.
 
 ----------------------------------------------------------------------------
 (rdb:5) where
@@ -348,7 +348,7 @@ At any time you can call the `backtrace` command (or its alias `where`) to print
 ...
 ----------------------------------------------------------------------------
 
-You move anywhere you want in this trace (thus changing the context) by using the `frame _n_` command, where _n_ is the specified frame number.
+Es posible desplazarse a cualquier lugar en la pila (lo cual implica cambio de contexto) usando el comando `frame _n_`, en donde _n_  indica el número del frame.
 
 ----------------------------------------------------------------------------
 (rdb:5) frame 2
@@ -356,13 +356,13 @@ You move anywhere you want in this trace (thus changing the context) by using th
        at line /PathTo/project/vendor/rails/actionpack/lib/action_controller/base.rb:1175
 ----------------------------------------------------------------------------
 
-The available variables are the same as if you were running the code line by line. After all, that's what debugging is.
+Las variables disponibles son las mismas que encontraría al ejecutar el código linea por linea. Despúes de todo, eso es lo que hace un depurador.
 
-Moving up and down the stack frame: You can use `up [n]` (`u` for abbreviated) and `down [n]` commands in order to change the context _n_ frames up or down the stack respectively. _n_ defaults to one. Up in this case is towards higher-numbered stack frames, and down is towards lower-numbered stack frames.
+Para moverse hacia arriba o abajo en la pila de instrucciones: Puede utilizar `up [n]` (`u` - método abreviado) para ir hacia arriba y `down [n]` para moverse hacia abajo, con la finalidad de cambiar el contexto un número _n_ de frames hacia arriba o abajo respectivamente. _n_ por defecto a uno. Up en este caso desplaza hacua número superior en los frames de la pila de llamadas, y down desplaza hacia abajo en los frames de la pila de llamadas.
 
-=== Threads
+=== Hilos
 
-The debugger can list, stop, resume and switch between running threads by using the command `thread` (or the abbreviated `th`). This command has a handful of options:
+El depurador puede lista, detener, continuar y cambiar entre los diferentes hilos que se encuentra en ejecución empleando el comando `thread` (o su versión abreviada `th`). Este comando tiene un montón de opciones:
 
 * `thread` shows the current thread.
 * `thread list` is used to list all threads and their statuses. The plus + character and the number indicates the current thread of execution.
@@ -370,13 +370,13 @@ The debugger can list, stop, resume and switch between running threads by using 
 * `thread resume _n_` resumes thread _n_.
 * `thread switch _n_` switches the current thread context to _n_.
 
-This command is very helpful, among other occasions, when you are debugging concurrent threads and need to verify that there are no race conditions in your code.
+Este comando es muy útil, especialmente cuando se necesita depurar hilos concurrentes y para comprobar que no existen condiciones de carrera en el código.
 
-=== Inspecting Variables
+=== Inspeccionando Variables
 
-Any expression can be evaluated in the current context. To evaluate an expression, just type it!
+Cualquier expresión puede ser evaluada en el contexto actual. Para evaluar una expresión, solo escribala!!
 
-This example shows how you can print the instance_variables defined within the current context:
+Este ejemplo muestra como se puede mostrar las variables de instancia (instance_variables) definidas dentro del contexto actual:
 
 ----------------------------------------------------------------------------
 @posts = Post.find(:all)
@@ -384,7 +384,7 @@ This example shows how you can print the instance_variables defined within the c
 ["@_response", "@action_name", "@url", "@_session", "@_cookies", "@performed_render", "@_flash", "@template", "@_params", "@before_filter_chain_aborted", "@request_origin", "@_headers", "@performed_redirect", "@_request"]
 ----------------------------------------------------------------------------
 
-As you may have figured out, all of the variables that you can access from a controller are displayed. This list is dynamically updated as you execute code. For example, run the next line using `next` (you'll learn more about this command later in this guide).
+Como ya se debe haber dado cuenta, se muestran todas las variables que son accedidas desde un controlador. Esta lista es actualizada dinámicamente a medida que ejecuta código. Por ejemplo, ejecute la siguiente linea usando `next` (Aprenderá más sobre este comando en las secciones siguientes de la guía).
 
 ----------------------------------------------------------------------------
 (rdb:11) next
@@ -395,19 +395,19 @@ Processing PostsController#index (for 127.0.0.1 at 2008-09-04 19:51:34) [GET]
 respond_to do |format|
 -------------------------------------------------------------------------------
 
-And then ask again for the instance_variables:
+Preguntemos de nuevo por los valores de las varibles de instancia:
 
 ----------------------------------------------------------------------------
 (rdb:11) instance_variables.include? "@posts"
 true
 ----------------------------------------------------------------------------
 
-Now +@posts+ is a included in the instance variables, because the line defining it was executed.
+Ahora se incluye +@posts+ en las varibales de instancia, debido a que la linea que lo define fué ejecutada.
 
-[TIP]
-You can also step into *irb* mode with the command `irb` (of course!). This way an irb session will be started within the context you invoked it. But be warned: this is an experimental feature.
+[NOTA]
+Támbien puede entrar al modo *irb* con el comando `irb` (¡por supuesto!). De esta forma se iniciará una sesión rib dentro del contexto en el cual fue invocada. Pero cuidado: Esta funcionalidad es experimental.
 
-The `var` method is the most convenient way to show variables and their values:
+El método `var` es la forma más conveniente de mostrar las variables y sus valores:
 
 ----------------------------------------------------------------------------
 var
@@ -417,14 +417,14 @@ var
 (rdb:1) v[ar] l[ocal]                   show local variables
 ----------------------------------------------------------------------------
 
-This is a great way to inspect the values of the current context variables. For example:
+Esta es una forma fenómenal de onspeccionar los valores de las variables en el contexto actual. Por ejemplo:
 
 ----------------------------------------------------------------------------
 (rdb:9) var local
   __dbg_verbose_save => false
 ----------------------------------------------------------------------------
 
-You can also inspect for an object method this way:
+Támbien puede inspeccionar el método de un objeto de esta manera:
 
 ----------------------------------------------------------------------------
 (rdb:9) var instance Post.new
@@ -433,32 +433,32 @@ You can also inspect for an object method this way:
 @new_record = true
 ----------------------------------------------------------------------------
 
-[TIP]
-The commands `p` (print) and `pp` (pretty print) can be used to evaluate Ruby expressions and display the value of variables to the console.
+[NOTA]
+El comando `p` (print) y `pp` (pretty print) pueden ser usador para evaluar expresiones Ruby y mostrar el valor de las variables en la consola.
 
-You can use also `display` to start watching variables. This is a good way of tracking the values of a variable while the execution goes on.
+Támbien puede usar `display` para iniciar el seguimietno de variables. Esta es una buena forma de hacer seguimietno a los variables mientras avanza la ejecución.
 
 ----------------------------------------------------------------------------
 (rdb:1) display @recent_comments
 1: @recent_comments =
 ----------------------------------------------------------------------------
 
-The variables inside the displaying list will be printed with their values after you move in the stack. To stop displaying a variable use `undisplay _n_` where _n_ is the variable number (1 in the last example).
+Las variabes dentro de la lista se mostrarán con sus valores mientras se mueva en la pila. Para dejar de mostrar una variable use `undisplay _n_` donde _n_  indica el número de la variable (1 en el último ejemplo).
 
-=== Step by Step
+=== Paso a Paso
 
-Now you should know where you are in the running trace and be able to print the available variables. But lets continue and move on with the application execution.
+Ahora debe saber en donde se encuentra en la traza que se esta corriendo, así como podor mostrar las variables disponibles. Pero continuemos y sigamos la ejecución de la aplicación.
 
-Use `step` (abbreviated `s`) to continue running your program until the next logical stopping point and return control to ruby-debug.
+Use `step` (abbreviado `s`) para continuar la ejecucón del programa hasta la siguiente punto de parada lógico y regrese el contro a ruby-debug.
 
-[TIP]
-You can also use `step+ _n_` and `step- _n_` to move forward or backward _n_ steps respectively.
+[NOTA]
+Támbien se puede utilizar `step+ _n_` y `step- _n_` para avanzar o retroceser _n_ pasos respectivamente.
 
 You may also use `next` which is similar to step, but function or method calls that appear within the line of code are executed without stopping. As with step, you may use plus sign to move _n_ steps.
 
-The difference between `next` and `step` is that `step` stops at the next line of code executed, doing just a single step, while `next` moves to the next line without descending inside methods.
+La diferencia entre `next` y `step` es que `step` se tiene en la siguiente linea del código ejecutado, haciendo un solo paso, mientras que `next` avanza a la siguiente linea sin desender hacia los métodos.
 
-For example, consider this block of code with an included +debugger+ statement:
+Por ejemplo, consideré este bloque de código con la linea +debugger+ incluida:
 
 [source, ruby]
 ----------------------------------------------------------------------------
@@ -477,8 +477,8 @@ class Author < ActiveRecord::Base
 end
 ----------------------------------------------------------------------------
 
-[TIP]
-You can use ruby-debug while using script/console. Just remember to `require "ruby-debug"` before calling the `debugger` method.
+[NOTA]
+Puede user ruby-debug mientras esta ejecutando script/console. Solo debe recordar que se debe incluir `require "ruby-debug"` antes de la llamanda al método `debugger`.
 
 ----------------------------------------------------------------------------
 /PathTo/project $ script/console
@@ -492,7 +492,7 @@ Loading development environment (Rails 2.1.0)
 )
 ----------------------------------------------------------------------------
 
-With the code stopped, take a look around:
+Con el código detenido, podemos echar un vistaso:
 
 ----------------------------------------------------------------------------
 (rdb:1) list
@@ -507,7 +507,7 @@ With the code stopped, take a look around:
    13  end
 ----------------------------------------------------------------------------
 
-You are at the end of the line, but... was this line executed? You can inspect the instance variables.
+Esta al final de la linea, pero... se ejecutó esta linea? Puede inspeccionar las variables de instancia.
 
 ----------------------------------------------------------------------------
 (rdb:1) var instance
@@ -515,7 +515,7 @@ You are at the end of the line, but... was this line executed? You can inspect t
 @attributes_cache = {}
 ----------------------------------------------------------------------------
 
-+@recent_comments+ hasn't been defined yet, so it's clear that this line hasn't been executed yet. Use the +next+ command to move on in the code:
++@recent_comments+ no ha sido definido todavía, así que es claro que esta linea no ha sido executada. Use el comando +next+ para avanzar en el código:
 
 ----------------------------------------------------------------------------
 (rdb:1) next
@@ -528,26 +528,26 @@ You are at the end of the line, but... was this line executed? You can inspect t
 @recent_comments = []
 ----------------------------------------------------------------------------
 
-Now you can see that the +@comments+ relationship was loaded and @recent_comments defined because the line was executed.
+Ahora puede ver que la relación +@comments+ fué cargada y que @recent_comments fue definida debido a que la linea fué ejecutada.
 
-If you want to go deeper into the stack trace you can move single `steps`, through your calling methods and into Rails code. This is one of the best ways to find bugs in your code, or perhaps in Ruby or Rails.
+Si quiere ir más profundo en la pila de llamadas, puede moverese una "paso" a la vez usando `steps`, a lo largo de los métos que se llaman y dentro del código Rails. Esta es una de las mejores maneras de encontrar bugs en su código, o quizas en Ruby on Rails.
 
-=== Breakpoints
+=== Puntos de Interrupción
 
-A breakpoint makes your application stop whenever a certain point in the program is reached. The debugger shell is invoked in that line.
+Un punto de interrupción hace que su aplicación se detenga  cunado se haya alcanzado cierto punto. La consola del depurador es invocada en esa linea.
 
-You can add breakpoints dynamically with the command `break` (or just `b`). There are 3 possible ways of adding breakpoints manually:
+Se pueden agregar puntos de interrupción de manera dinámica con el comando `break` (o solo `b`). Hay 3 posibles formas de agregar puntos de interrupción de manera manual:
 
-* `break line`: set breakpoint in the _line_ in the current source file.
-* `break file:line [if expression]`: set breakpoint in the _line_ number inside the _file_. If an _expression_ is given it must evaluated to _true_ to fire up the debugger.
-* `break class(.|\#)method [if expression]`: set breakpoint in _method_ (. and \# for class and instance method respectively) defined in _class_. The _expression_ works the same way as with file:line.
+* `break line`: Establece el punto de interrupción en la linea _line_, en el código fuente áctual.
+* `break file:line [if expression]`: Establece el punto de interrupción en el número de linea (_line_) dentro del archivo _file_. Sí se indica una expresión (_expression_), la misma debe ser evaluada como verdadera (_true_) para iniciar el depurador.
+* `break class(.|\#)method [if expression]`: Establece un punto de interrupción en un método (_method_) (. y \# para clases y métodos de instancia respectivamente) Definido en la classe (_class_). La expresión (_expression_) trabaja de la misma forma archivo:linea (file:line).
 
 ----------------------------------------------------------------------------
 (rdb:5) break 10
 Breakpoint 1 file /PathTo/project/vendor/rails/actionpack/lib/action_controller/filters.rb, line 10
 ----------------------------------------------------------------------------
 
-Use `info breakpoints _n_` or `info break _n_` to list breakpoints. If you supply a number, it lists that breakpoint. Otherwise it lists all breakpoints.
+Use `info breakpoints _n_` o `info break _n_` para listar los puntos de interrupción. Si indica el número, se listará ese punto de interrupción. De otra manera se listarán todos los puntos de interrupción.
 
 ----------------------------------------------------------------------------
 (rdb:5) info breakpoints
@@ -555,7 +555,7 @@ Num Enb What
   1 y   at filters.rb:10
 ----------------------------------------------------------------------------
 
-To delete breakpoints: use the command `delete _n_` to remove the breakpoint number _n_. If no number is specified, it deletes all breakpoints that are currently active..
+Para eliminar los puntos de interrupción: emplee  el comando `delete _n_` para eliminar el punto de interrupción número _n_. Si no se h especificado ningún número, elmina todos los puntos de interrupción que se encuentran activos.
 
 ----------------------------------------------------------------------------
 (rdb:5) delete 1
@@ -563,52 +563,53 @@ To delete breakpoints: use the command `delete _n_` to remove the breakpoint num
 No breakpoints.
 ----------------------------------------------------------------------------
 
-You can also enable or disable breakpoints:
+Puede habilitar o deshabilitar los puntos de interrupción:
 
-* `enable breakpoints`: allow a list _breakpoints_ or all of them if no list is specified, to stop your program. This is the default state when you create a breakpoint.
-* `disable breakpoints`: the _breakpoints_ will have no effect on your program.
+* `enable breakpoints`: Habilita una lista o todos los puntos de restauración (si no se especifica ninguna lista), para detener el programa. Este es el estado por defecto en el que se crea un punto de restauración.
+* `disable breakpoints`: Los puntos de restauración no tendrán efecto en el programa.
 
-=== Catching Exceptions
+=== Capturando Excepciones
 
-The command `catch exception-name` (or just `cat exception-name`) can be used to intercept an exception of type _exception-name_ when there would otherwise be is no handler for it.
+El comando `catch exception-name` (o solo `cat exception-name`) puede ser usado para interceptar una excepción del tipo _nombre-de-excepción_ cuando de otra manera, hubiera un manejador para el. 
 
-To list all active catchpoints use `catch`.
+Para listar todos los puntos de captura emplee `catch`.
 
-=== Resuming Execution
+=== Retomando la Ejecución 
 
-There are two ways to resume execution of an application that is stopped in the debugger:
+Hay 2 formas de retomar la ejecución de una aplicación que haya sido detenida previamente por el depurador:
 
-* `continue` [line-specification] (or `c`): resume program execution, at the address where your script last stopped; any breakpoints set at that address are bypassed. The optional argument line-specification allows you to specify a line number to set a one-time breakpoint which is deleted when that breakpoint is reached.
-* `finish` [frame-number] (or `fin`): execute until the selected stack frame returns. If no frame number is given, the application run until the currently selected frame returns. The currently selected frame starts out the most-recent frame or 0 if no frame positioning (e.g up, down or frame) has been performed. If a frame number is given it will run until the specified frame returns.
+* `continue` [line-specification] (o `c`): Retoma la ejecución del programa, en la dirección donde el script se detuvo por última vez; cualquier punto de interrupción definido en esa dirección será omitido. El argumento opcional especificación-de-linea (line-specification) le permite especificar un número de linea para definir un punto de interrupción de una sola ejecución, que será eliminado una vez se haya llegado al mismo.
+* `finish` [frame-number] (o `fin`): Ejecute hasta que la pila de instrucciones seleccionada haya llegado a su final. Si no se ha indicado el número del frame, la aplicación se jecutara hasta que se retorne al frame actualmente seleccionado. El frame actualmente seleccionado empieza desde el frame más reciente o desde 0, si no se ha realizado ningún posicionamiento de frame (arriba o abajo). Si se indica el número del frame, se ejecutará hasta que se regrese al número del frame especificado.
 
-=== Editing
+=== Edición
 
-Two commands allow you to open code from the debugger into an editor:
+Dos comandos permiten abrir archivos desde el depurador a un editor:
 
-* `edit [file:line]`: edit _file_ using the editor specified by the EDITOR environment variable. A specific _line_ can also be given.
+* `edit [file:line]`: Edita el archivo (_file_) usando el editor especificado por la variable de ambiente EDITOR Se puede especificar el número de linea.
 * `tmate _n_` (abbreviated `tm`): open the current file in TextMate. It uses n-th frame if _n_ is specified.
 
-=== Quitting
+=== Salir del depurador
 
-To exit the debugger, use the `quit` command (abbreviated `q`), or its alias `exit`.
+Dos comandos le permiten abrir archivos desde el depurador a un editor:
+El comando `quit` (abbreviated `q`), o su alias `exit`.
 
-A simple quit tries to terminate all threads in effect. Therefore your server will be stopped and you will have to start it again.
+Un simple _quit_ intenta finalizar todos los hilos en ejecución. Por lo tanto, su servidor se detendrá y tendrá que empezar de nuevo.
 
-=== Settings
+=== Configuración 
 
-There are some settings that can be configured in ruby-debug to make it easier to debug your code. Here are a few of the available options:
+Hay algunos parametros que pueden ser configurados en ruby-debug para facilitar la depuración de su código. Aquí hay algunas opciones disponibles:
 
-* `set reload`: Reload source code when changed.
-* `set autolist`: Execute `list` command on every breakpoint.
-* `set listsize _n_`: Set number of source lines to list by default to _n_.
-* `set forcestep`: Make sure the `next` and `step` commands always move to a new line
+* `set reload`: Carga de nuevo el código fuente toda vez que haya sido cambiado.
+* `set autolist`: Ejecuta el comando `list` en cada punto de interrupción.
+* `set listsize _n_`: Establece el número de lineas de código fuente a listar, por defecto a _n_.
+* `set forcestep`: Asegura que los comandos `next` y `step` siempre se moveran a una nueva linea.
 
 You can see the full list by using `help set`. Use `help set _subcommand_` to learn about a particular +set+ command.
 
-[TIP]
-You can include any number of these configuration lines inside a `.rdebugrc` file in your HOME directory. ruby-debug will read this file every time it is loaded. and configure itself accordingly.
+[NOTA]
+Puede incluir cualquier cantidad de estas lineas de configuración dentro del archivo `.rdebugrc`, en su HOME directori. ruby-debug leerá este archivo cada vez que es cargado y se configura basandose en lo encontrado.
 
-Here's a good start for an `.rdebugrc`:
+Aquí hay un buen comienzo para un archivo `.rdebugrc`:
 
 [source, log]
 ----------------------------------------------------------------------------
@@ -617,7 +618,7 @@ set forcestep
 set listsize 25
 ----------------------------------------------------------------------------
 
-== References
+== Referencias 
 
 * link:http://www.datanoise.com/ruby-debug[ruby-debug Homepage]
 * link:http://www.sitepoint.com/article/debug-rails-app-ruby-debug/[Article: Debugging a Rails application with ruby-debug]
@@ -629,7 +630,7 @@ set listsize 25
 * link:http://cheat.errtheblog.com/s/rdebug/[ruby-debug cheat sheet]
 * link:http://wiki.rubyonrails.org/rails/pages/HowtoConfigureLogging[Ruby on Rails Wiki: How to Configure Logging]
 
-== Changelog ==
+== Bitácora de Cambios  ==
 
 http://rails.lighthouseapp.com/projects/16213-rails-guides/tickets/5[Lighthouse ticket]
 
