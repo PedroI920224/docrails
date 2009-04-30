@@ -184,11 +184,11 @@ Si abres este archivo en una nueva aplicación Rails, encontrarás la configurac
 * El ambiente de pruebas (+test+) se utiliza para ejecutar pruebas automatizadas.
 * El ambiente de producción (+production+) se utiliza para distribuir tu aplicación para ser utilizada por todo el mundo.
 
-==== Configuring a SQLite Database
+==== Configurando una base de datos SQLite
 
-Rails comes with built-in support for SQLite, which is a lightweight flat-file based database application. While a busy production environment may overload SQLite, it works well for development and testing. Rails defaults to using a SQLite database when creating a new project, but you can always change it later.
+Rails viene con soporte integrado para SQLite, que es una aplicación ligera de base de datos basada en archivos planos. si bien un ambiente intenso de producción puede sobrecargar SQLite, funciona bien para ambientes de desarrollo y pruebas. Rails por defecto utiliza SQLite al momento de crear un nuevo proyecto, pero siempre se puede cambiar posteriormente.
 
-Here's the section of the default configuration file with connection information for the development environment:
+A continuación tenemos la sección de la configuración por defecto con la información de conexción para el ambiente de desarrollo:
 
 [source, ruby]
 -------------------------------------------------------
@@ -198,9 +198,9 @@ development:
   timeout: 5000
 -------------------------------------------------------
 
-If you don't have any database set up, SQLite is the easiest to get installed. If you're on OS X 10.5 or greater on a Mac, you already have it. Otherwise, you can install it using RubyGems:
+Si no tienes ninguna base de datos instalada, SQLite es la más fácil de instalar. Si usas OS X 10.5 o más reciente en una Mac, ya la tienes instalada. De otra forma, la puedes instalar utilizando RubyGems:
 
-If you're not running OS X 10.5 or greater, you'll need to install the SQLite gem.  Similar to installing Rails you just need to run:
+Si no estás utilizando OS X 10.5 o más reciente, necesitarás instalar la gema (gem) SQLite. Es similar a la instalación de Rails, solo necesitar ejecutar:
 
 [source, shell]
 -------------------------------------------------------
