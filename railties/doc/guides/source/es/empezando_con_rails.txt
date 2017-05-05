@@ -207,7 +207,7 @@ Si no estás utilizando OS X 10.5 o más reciente, necesitarás instalar la gema
 $ gem install sqlite3-ruby
 -------------------------------------------------------
 
-==== Configuring a MySQL Database
+==== Configurando una base de datos MySQL
 
 If you choose to use MySQL, your +config/database.yml+ will look a little different. Here's the development section:
 
