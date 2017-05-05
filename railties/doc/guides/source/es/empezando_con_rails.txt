@@ -53,7 +53,7 @@ Las Vistas representan la interface de usuario de tu aplicación. En Rails, las 
 
 ==== Controladores
 
-Los Controladores proveen el "pegamente" entre los Modelos y las Vistas. En Rails, los Controladores son responsables de procesar las peticiones del navegador web, solicitando datos a los Modelos y pasando esos datos a las Vistas para que los presenten.
+Los Controladores proveen el "pegamento" entre los Modelos y las Vistas. En Rails, los Controladores son responsables de procesar las peticiones del navegador web, solicitando datos a los Modelos y pasando esos datos a las Vistas para que los presenten.
 
 === Los Componentes de Rails
 
