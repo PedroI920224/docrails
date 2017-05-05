@@ -53,7 +53,7 @@ Las Vistas representan la interface de usuario de tu aplicación. En Rails, las 
 
 ==== Controladores
 
-Los Controladores proveen el "pegamente" entre los Modelos y las Vistas. En Rails, los Controladores son responsables de procesar las peticiones del navegador web, solicitando datos a los Modelos y pasando esos datos a las Vistas para que los presenten.
+Los Controladores proveen el "pegamento" entre los Modelos y las Vistas. En Rails, los Controladores son responsables de procesar las peticiones del navegador web, solicitando datos a los Modelos y pasando esos datos a las Vistas para que los presenten.
 
 === Los Componentes de Rails
 
@@ -207,7 +207,7 @@ Si no estás utilizando OS X 10.5 o más reciente, necesitarás instalar la gema
 $ gem install sqlite3-ruby
 -------------------------------------------------------
 
-==== Configuring a MySQL Database
+==== Configurando una base de datos MySQL
 
 If you choose to use MySQL, your +config/database.yml+ will look a little different. Here's the development section:
 
