@@ -1,0 +1,48 @@
+== 2.9 presence
+Este ayudante valida que los atributos especificados no estén vacíos. Utiliza el metodo blank?
+para comprobar si el valor es nil o una cadena esta en blanco, es decir, una cadena que está
+vacía o consta de espacios en blanco.
+
+[source, ruby]
+-------------------------------------------------------
+class Person < ActiveRecord::Base
+  validates :name, :login, :email, presence: true
+end
+-------------------------------------------------------
+
+Si desea estar seguro de que una asociación está presente, deberá probar si el objeto
+asociado está presente y no la clave externa utilizada para asignar la asociación.
+
+[source, ruby]
+-------------------------------------------------------
+class LineItem < ActiveRecord::Base
+  belongs_to :order
+  validates :order, presence: true
+end
+-------------------------------------------------------
+
+En el modelo order, para validar los registros asociados cuya presencia es necesaria, debe
+especificar la opción :inverse_of para la asociación:
+
+[source, ruby]
+-------------------------------------------------------
+class Order < ActiveRecord::Base
+  has_many :line_items, inverse_of: :order
+end
+-------------------------------------------------------
+
+Si valida la presencia de un objeto asociado a través de una relación has_one o has_many,
+comprobará que el objeto no está en blank? Ni marked_for_destruction?
+
+Desde false.blank? Es true, si desea validar la presencia de un campo booleano debe utilizar
+una de las siguientes validaciones:
+
+[source, ruby]
+-------------------------------------------------------
+validates :boolean_field_name, presence: true
+validates :boolean_field_name, inclusion: { in: [true, false] }
+validates :boolean_field_name, exclusion: { in: [nil] }
+-------------------------------------------------------
+
+Mediante el uso de una de estas validaciones, se asegurará de que el valor NO será nil lo que
+resultaría en un valor NULL en la mayoría de los casos.
