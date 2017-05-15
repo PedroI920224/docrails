@@ -1,7 +1,5 @@
 == 2.9 presence
-Este ayudante valida que los atributos especificados no estén vacíos. Utiliza el metodo blank?
-para comprobar si el valor es nil o una cadena esta en blanco, es decir, una cadena que está
-vacía o consta de espacios en blanco.
+Este ayudante valida que los atributos especificados no estén vacíos. Utiliza el metodo blank? para comprobar si el valor es nil o una cadena esta en blanco, es decir, una cadena que está vacía o consta de espacios en blanco.
 
 [source, ruby]
 -------------------------------------------------------
@@ -10,8 +8,7 @@ class Person < ActiveRecord::Base
 end
 -------------------------------------------------------
 
-Si desea estar seguro de que una asociación está presente, deberá probar si el objeto
-asociado está presente y no la clave externa utilizada para asignar la asociación.
+Si desea estar seguro de que una asociación está presente, deberá probar si el objeto asociado está presente y no la clave externa utilizada para asignar la asociación.
 
 [source, ruby]
 -------------------------------------------------------
@@ -21,8 +18,7 @@ class LineItem < ActiveRecord::Base
 end
 -------------------------------------------------------
 
-En el modelo order, para validar los registros asociados cuya presencia es necesaria, debe
-especificar la opción :inverse_of para la asociación:
+En el modelo order, para validar los registros asociados cuya presencia es necesaria, debe especificar la opción :inverse_of para la asociación:
 
 [source, ruby]
 -------------------------------------------------------
@@ -31,11 +27,9 @@ class Order < ActiveRecord::Base
 end
 -------------------------------------------------------
 
-Si valida la presencia de un objeto asociado a través de una relación has_one o has_many,
-comprobará que el objeto no está en blank? Ni marked_for_destruction?
+Si valida la presencia de un objeto asociado a través de una relación has_one o has_many, comprobará que el objeto no está en blank? Ni marked_for_destruction?
 
-Desde false.blank? Es true, si desea validar la presencia de un campo booleano debe utilizar
-una de las siguientes validaciones:
+Desde false.blank? Es true, si desea validar la presencia de un campo booleano debe utilizar una de las siguientes validaciones:
 
 [source, ruby]
 -------------------------------------------------------
@@ -44,5 +38,74 @@ validates :boolean_field_name, inclusion: { in: [true, false] }
 validates :boolean_field_name, exclusion: { in: [nil] }
 -------------------------------------------------------
 
-Mediante el uso de una de estas validaciones, se asegurará de que el valor NO será nil lo que
-resultaría en un valor NULL en la mayoría de los casos.
+Mediante el uso de una de estas validaciones, se asegurará de que el valor NO será nil lo que resultaría en un valor NULL en la mayoría de los casos.
+
+== 2.10 absence
+Este ayudante valida que los atributos especificados están ausentes. Utiliza el metodo present? para comprobar si el valor no es nil o una cadena en blanco, es decir, una cadena que está vacía o consta de espacios en blanco.
+
+[source, ruby]
+-------------------------------------------------------
+class Person < ActiveRecord::Base
+  validates :name, :login, :email, absence: true
+end
+-------------------------------------------------------
+
+Si desea estar seguro de que una asociación está ausente, deberá probar si el objeto asociado está ausente y no la clave externa utilizada para asignar la asociación.
+
+[source, ruby]
+-------------------------------------------------------
+class LineItem < ActiveRecord::Base
+  belongs_to :order
+  validates :order, absence: true
+end
+-------------------------------------------------------
+
+Para validar los registros asociados cuyo absence es necesario, debe especificar la opción: inverse_of para la asociación:
+
+[source, ruby]
+-------------------------------------------------------
+class Order < ActiveRecord::Base
+  has_many :line_items, inverse_of: :order
+end
+-------------------------------------------------------
+
+Si valida la ausencia de un objeto asociado a través de una relación has_one o has_many, comprobará que el objeto no está present? Ni marked_for_destruction?.
+
+Desde false.present? Es falso, si desea validar la ausencia de un campo booleano que debe utilizar un validador :field_name, exclusion: { in: [true, false] }.
+
+El mensaje de error predeterminado es "must be blank".
+
+== 2.11 uniqueness
+Este ayudante valida que el valor del atributo es único justo antes de que el objeto sea guardado. No crea una restricción de unicidad en la base de datos, por lo que puede suceder que dos conexiones de base de datos diferentes creen dos registros con el mismo valor para una columna que desea ser único. Para evitarlo, debe crear un índice único en ambas columnas de la base de datos. Consulte el manual de MySQL para obtener más detalles sobre varios índices de columnas.
+
+[source, ruby]
+-------------------------------------------------------
+class Account < ActiveRecord::Base
+  validates :email, uniqueness: true
+end
+-------------------------------------------------------
+
+La validación ocurre realizando una consulta SQL en la tabla del modelo, buscando un registro existente con el mismo valor en ese atributo.
+
+Hay una opción de :scope que puede utilizar para especificar otros atributos que se utilizan para limitar la comprobación de unicidad:
+
+[source, ruby]
+-------------------------------------------------------
+class Holiday < ActiveRecord::Base
+  validates :name, uniqueness: { scope: :year,
+    message: ""should happen once per year"" }
+end
+-------------------------------------------------------
+
+También hay una opción: case_sensitive que puede utilizar para definir si la restricción de unicidad será sensible a mayúsculas o minúsculas. Esta opción predeterminada es true.
+
+[source, ruby]
+-------------------------------------------------------
+class Person < ActiveRecord::Base
+  validates :name, uniqueness: { case_sensitive: false }
+end
+-------------------------------------------------------
+
+Tenga en cuenta que algunas bases de datos están configuradas para realizar búsquedas sin distinción entre mayúsculas y minúsculas.
+
+El mensaje de error predeterminado es "has already been taken".
