@@ -109,3 +109,62 @@ end
 Tenga en cuenta que algunas bases de datos están configuradas para realizar búsquedas sin distinción entre mayúsculas y minúsculas.
 
 El mensaje de error predeterminado es "has already been taken".
+
+==2.12 validates_with
+Este ayudante pasa el registro a una clase separada para su validación.
+
+[source, ruby]
+-------------------------------------------------------
+class GoodnessValidator < ActiveModel::Validator
+  def validate(record)
+    if record.first_name == ""Evil""
+      record.errors[:base] << ""This person is evil""
+    end
+  end
+end
+
+class Person < ActiveRecord::Base
+  validates_with GoodnessValidator
+end
+-------------------------------------------------------
+
+Los errores añadidos a record.errors [:base] se refieren al estado del registro como un todo y no a un atributo específico.
+
+El ayudante validates_with toma una clase, o una lista de clases para utilizar para la validación. No hay un mensaje de error predeterminado para validates_with. Debe agregar manualmente errores a la colección de errores del registro en la clase validator.
+
+Para implementar el método validate, debe tener definido un parámetro record, que es el registro a validar.
+
+Como todas las demás validaciones, validates_with toma las opciones: if,: unless y: on. Si pasa otras opciones, enviará las opciones a la clase validator como options:
+
+[source, ruby]
+-------------------------------------------------------
+class GoodnessValidator < ActiveModel::Validator
+  def validate(record)
+    if options[:fields].any?{|field| record.send(field) == ""Evil"" }
+      record.errors[:base] << ""This person is evil""
+    end
+  end
+end
+
+class Person < ActiveRecord::Base
+  validates_with GoodnessValidator, fields: [:first_name, :last_name]
+end
+-------------------------------------------------------
+
+Tenga en cuenta que el validador se inicializará sólo una vez para todo el ciclo de vida de la aplicación, y no en cada ejecución de validación, así que tenga cuidado al usar variables de instancia dentro de ella.
+
+Si su validador es lo suficientemente complejo como para que desee variables de instancia, puede utilizar fácilmente un objeto Ruby antiguo:
+
+==2.13 validates_each
+Este ayudante valida atributos contra un bloque. No tiene una función de validación predefinida. Deberías crear uno usando un bloque, y cada atributo pasado a validates_each será probado. En el ejemplo siguiente, no queremos que los nombres y apellidos comiencen con minúsculas.
+
+[source, ruby]
+-------------------------------------------------------
+class Person < ActiveRecord::Base
+  validates_each :name, :surname do |record, attr, value|
+    record.errors.add(attr, 'must start with upper case') if value =~ /\A[[:lower:]]/
+  end
+end
+-------------------------------------------------------
+
+El bloque recibe el registro, el nombre del atributo y el valor del atributo. Puede hacer cualquier cosa que desee para buscar datos válidos dentro del bloque. Si la validación falla, debe agregar un mensaje de error al modelo, por lo que no es válido.
