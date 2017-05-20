@@ -778,3 +778,28 @@ Existen algunas limitaciones con  :inverse_of
 No trabajan con asociaciones :through.
 No funcionan con asociaciones polimórficas.
 No trabajan con asociaciones :as
+
+===4 Referencia detallada de la asociación
+Las siguientes secciones proporcionan los detalles de cada tipo de asociación, incluidos los métodos que agregan y las opciones que puede utilizar al declarar una asociación.
+
+==4.1 Referencia de la asociación belongs_to
+La asociación belongs_to crea una coincidencia uno-a-uno con otro modelo. En términos de base de datos, esta asociación dice que esta clase contiene la clave foránea. Si la otra clase contiene la clave foránea, entonces debería usar has_one en su lugar.
+
+4.1.1 Métodos agregados por belongs_to
+
+Cuando declara una asociación belongs_to, la clase declarante obtiene automáticamente cinco métodos relacionados con la asociación:
+
+[source, ruby]
+-------------------------------------------------------
+association
+association=(associate)
+build_association(attributes = {})
+create_association(attributes = {})
+create_association!(attributes = {})
+-------------------------------------------------------
+
+En todos estos métodos, la palabra association se sustituye por el símbolo pasado como el primer argumento a belongs_to. Por ejemplo, dada la declaración:
+
+class Book < ApplicationRecord
+  belongs_to :author
+end
